@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Sensor Toggle</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+  <h2>Sensor Control</h2>
+  <label>
+    <input type="checkbox" id="toggle">
+    Sensor Enabled
+  </label>
+
+  <script>
+    const toggle = document.getElementById('toggle');
+
+    toggle.addEventListener('change', () => {
+      const enabled = toggle.checked;
+      fetch("https://security-6df74-default-rtdb.europe-west1.firebaseio.com/sensorEnabled.json", {
+        method: "PUT",
+        body: JSON.stringify(enabled),
+        headers: { "Content-Type": "application/json" }
+      });
+    });
+
+    // Load current state
+    fetch("https://security-6df74-default-rtdb.europe-west1.com/sensorEnabled.json")
+      .then(res => res.json())
+      .then(data => toggle.checked = data === true);
+  </script>
+</body>
+</html>
