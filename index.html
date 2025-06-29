@@ -16,7 +16,7 @@
 
     toggle.addEventListener('change', () => {
       const enabled = toggle.checked;
-      fetch("https://security-6df74-default-rtdb.europe-west1.firebaseio.com/sensorEnabled.json", {
+      fetch("https://security-6df74-default-rtdb.europe-west1.firebaseio.com/senson.json", {
         method: "PUT",
         body: JSON.stringify(enabled),
         headers: { "Content-Type": "application/json" }
@@ -24,7 +24,7 @@
     });
 
     // Load current state
-    fetch("https://security-6df74-default-rtdb.europe-west1.com/sensorEnabled.json")
+    fetch("https://security-6df74-default-rtdb.europe-west1.com/senson.json")
       .then(res => res.json())
       .then(data => toggle.checked = data === true);
   </script>
