@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Sensor Toggle</title>
+  <title>Sensor Control</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -12,22 +12,25 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      height: 100vh;
+      min-height: 100vh;
       margin: 0;
     }
 
     h2 {
-      margin-bottom: 20px;
+      margin-bottom: 30px;
     }
 
     .switch-container {
       display: flex;
       align-items: center;
       font-size: 1.2em;
+      margin-bottom: 20px;
     }
 
     .switch-label {
       margin-right: 15px;
+      width: 100px;
+      text-align: right;
     }
 
     .switch {
@@ -76,48 +79,85 @@
     }
 
     .status {
-      margin-top: 15px;
+      font-size: 0.9em;
       font-weight: bold;
-      color: #444;
+      margin-left: 10px;
+      color: #333;
     }
   </style>
 </head>
 <body>
-  <h2>Sensor Control</h2>
+  <h2>Sensor Control Panel</h2>
+
+  <!-- Sensor Toggle -->
   <div class="switch-container">
-    <span class="switch-label">Enabled:</span>
+    <span class="switch-label">Sensor:</span>
     <label class="switch">
-      <input type="checkbox" id="toggle">
+      <input type="checkbox" id="sensorToggle">
       <span class="slider"></span>
     </label>
+    <span class="status" id="sensorStatus">Loading...</span>
   </div>
-  <div class="status" id="statusText">Loading status...</div>
+
+  <!-- Reed Toggle -->
+  <div class="switch-container">
+    <span class="switch-label">Reed:</span>
+    <label class="switch">
+      <input type="checkbox" id="reedToggle">
+      <span class="slider"></span>
+    </label>
+    <span class="status" id="reedStatus">Loading...</span>
+  </div>
 
   <script>
-    const toggle = document.getElementById('toggle');
-    const statusText = document.getElementById('statusText');
-    const firebaseUrl = "https://security-6df74-default-rtdb.europe-west1.firebasedatabase.app/senson.json";
+    // Sensor
+    const sensorToggle = document.getElementById('sensorToggle');
+    const sensorStatus = document.getElementById('sensorStatus');
+    const sensorUrl = "https://security-6df74-default-rtdb.europe-west1.firebasedatabase.app/senson.json";
 
-    toggle.addEventListener('change', () => {
-      const enabled = toggle.checked;
-      fetch(firebaseUrl, {
+    sensorToggle.addEventListener('change', () => {
+      const enabled = sensorToggle.checked;
+      fetch(sensorUrl, {
         method: "PUT",
         body: JSON.stringify(enabled),
         headers: { "Content-Type": "application/json" }
       }).then(() => {
-        statusText.textContent = "Sensor is " + (enabled ? "ENABLED" : "DISABLED");
+        sensorStatus.textContent = enabled ? "ENABLED" : "DISABLED";
       });
     });
 
-    // Load current state on page load
-    fetch(firebaseUrl)
+    fetch(sensorUrl)
       .then(res => res.json())
       .then(data => {
-        toggle.checked = data === true;
-        statusText.textContent = "Sensor is " + (data ? "ENABLED" : "DISABLED");
-      })
-      .catch(() => {
-        statusText.textContent = "Failed to load status.";
+        sensorToggle.checked = data === true;
+        sensorStatus.textContent = data ? "ENABLED" : "DISABLED";
+      }).catch(() => {
+        sensorStatus.textContent = "Error";
+      });
+
+    // Reed
+    const reedToggle = document.getElementById('reedToggle');
+    const reedStatus = document.getElementById('reedStatus');
+    const reedUrl = "https://security-6df74-default-rtdb.europe-west1.firebasedatabase.app/reed.json";
+
+    reedToggle.addEventListener('change', () => {
+      const enabled = reedToggle.checked;
+      fetch(reedUrl, {
+        method: "PUT",
+        body: JSON.stringify(enabled),
+        headers: { "Content-Type": "application/json" }
+      }).then(() => {
+        reedStatus.textContent = enabled ? "ENABLED" : "DISABLED";
+      });
+    });
+
+    fetch(reedUrl)
+      .then(res => res.json())
+      .then(data => {
+        reedToggle.checked = data === true;
+        reedStatus.textContent = data ? "ENABLED" : "DISABLED";
+      }).catch(() => {
+        reedStatus.textContent = "Error";
       });
   </script>
 </body>
